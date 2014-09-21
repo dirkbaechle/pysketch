@@ -1,0 +1,171 @@
+#!/usr/bin/env python2
+
+# coding: latin-1
+# Copyright (c) 2014 Dirk Baechle.
+# www: https://bitbucket.org/dirkbaechle/pysketch
+# mail: dl9obn AT darc.de
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+# KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+
+import sys
+import pysketch
+
+import pysketch.pygobject
+import pysketch.pygtk
+import pysketch.tkinter
+
+# List of different GUI bindings to try for
+excl_modes = [pysketch.pygobject,
+              pysketch.pygtk]
+try_modes = [pysketch.tkinter]
+
+# The available GUI modes
+mode = {}
+selected_mode = None
+
+#
+# Parse options
+#
+if len(sys.argv) > 1:
+    import optparse
+    
+    parser = optparse.OptionParser(description=pysketch.banner())
+    
+    parser.add_option('-m', '--mode',
+                      action='store', dest='mode', default='', metavar='MODE',
+                      help='selects the GUI mode (pygtk, tkinter, ...)')
+    parser.add_option('-x', '--xsize',
+                      action='store', dest='xsize', default='300', metavar='PIXEL',
+                      help='initial/minimum size of the drawing canvas in x [default : %default]')
+    parser.add_option('-y', '--ysize',
+                      action='store', dest='ysize', default='300', metavar='PIXEL',
+                      help='initial/minimum size of the drawing canvas in y [default : %default]')
+    parser.add_option('-d', '--dimensions',
+                      action='store', dest='dimensions', default='300x300', metavar='WxH',
+                      help='initial/minimum size of (width)x(height) for the drawing canvas [default : %default]')
+    parser.add_option('-s', '--size',
+                      action='store', dest='size', default='3', metavar='PIXEL',
+                      help='size of the drawing pen in pixel [default : %default]')
+    parser.add_option('-p', '--polarity',
+                      action='store_true', dest='polarity', default=False,
+                      help='reverse the default polarity to white-on-black')
+    parser.add_option('-l', '--list',
+                      action='store_true', dest='list', default=False,
+                      help='list the GUI bindings available for the -m option')
+
+    options, args = parser.parse_args()
+    
+    # List modes
+    if options.list:
+        for t in excl_modes:
+            if t.exists():
+                mode[t.name()] = t
+                break
+        for t in try_modes:
+            if t.exists():
+                mode[t.name()] = t
+    
+        print "Available modes are: %s" % ', '.join(mode.keys())
+        sys.exit(0)
+    
+    # Process other options
+    if options.mode:
+        selected_mode = options.mode
+    if options.xsize != '300':
+        try:
+            x = int(options.xsize)
+            if x > 0:
+                pysketch.canvas_width = x
+        except:
+            pass
+    if options.ysize != '300':
+        try:
+            y = int(options.ysize)
+            if y > 0:
+                pysketch.canvas_height = y
+        except:
+            pass  
+    if options.dimensions != '300x300':
+        try:
+            dl = options.dimensions.split('x')
+            if len(dl) > 1:
+                x = int(dl[0])
+                y = int(dl[1])
+                if x > 0:
+                    pysketch.canvas_width = x
+                if y > 0:
+                    pysketch.canvas_height = y
+        except:
+            pass  
+
+    if options.size != '3':
+        try:
+            pen = int(options.size)
+            if pen > 0:
+                pysketch.pen_size = pen
+        except:
+            pass
+    if options.polarity:
+        pysketch.black_pen = False
+
+#
+# Detect modes
+#
+if not selected_mode:
+    for t in excl_modes:
+        if t.exists():
+            # Pre-select first existing mode
+            if not selected_mode:
+                selected_mode = t.name()
+            mode[t.name()] = t
+            break
+    
+    for t in try_modes:
+        if t.exists():
+            # Pre-select first existing mode
+            if not selected_mode:
+                selected_mode = t.name()
+            mode[t.name()] = t
+else:
+    excl_modes.extend(try_modes)
+    for t in excl_modes:
+        if t.name() == selected_mode and t.exists():
+            mode[t.name()] = t
+
+if not mode:
+    print "You don't seem to have any GUI support at all! Please install a"
+    print "Python binding like Tkinter, pygtk or pygobject...and try again."
+    sys.exit(1)
+
+
+#
+# Start the selected mode
+#
+
+if not selected_mode:
+    print "No GUI mode was selected! Exiting."
+    sys.exit(1)
+
+if selected_mode in mode:
+    mode[selected_mode].run_main()
+else:
+    print "The specified GUI mode '%s' is not available!" % selected_mode
+    print "You may want to try the -l/--list option..."

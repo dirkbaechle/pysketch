@@ -42,13 +42,20 @@ After a successful installation, you can call ``pysketch`` from the command-line
 
 It supports a few parameters, that get listed with the ``-h`` option (or ``--help``).
 
-Draw with the left mouse button held down, the right button erases with a doubled pen size. The
+Draw with the left mouse button held down, the right button erases with a larger pen size. The
 two push buttons at the bottom of the main widget should be pretty self-explanatory. ;)
 
 Requirements
 ============
 
-Pysketch should run under any Python2.x, with either the Tkinter or GTK2/pygobject bindings installed.
+Pysketch should run under any Python2.x, with having one of the
+
+* Tkinter
+* GTK2
+* pygobject
+* PyQt4 
+ 
+bindings installed.
 
 TODOs and known problems
 ========================
@@ -56,7 +63,3 @@ TODOs and known problems
 Tkinter mode: making the canvas larger, drawing, and then shrinking the window again, will
 lead to inconsistencies. The canvas items that are off-screen don't get removed (no clipping),
 but the PIL image in the background won't have those lines anymore.
-
-Pygobject mode: on a resize, the canvas is cleared completely. Just like for the pygtk binding,
-the current surface should be saved into a pixbuf, and then copied to the new surface again.
-Additionally, drawing is slow...try double-buffering for a better performance.

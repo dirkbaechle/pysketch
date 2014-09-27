@@ -29,12 +29,16 @@
 canvas_width = 300
 canvas_height = 300
 pen_size = 3
+erase_factor = 8
 black_pen = True
-version = '1.0'
+draw_lines = True
+version = '1.1'
+
 
 def banner():
     """ Return a small banner message.
     """
+    
     return "pysketch %s, https://bitbucket.org/dirkbaechle/pysketch" % version
 
 #

@@ -30,12 +30,14 @@ import pysketch
 
 import pysketch.pygobject
 import pysketch.pygtk
+import pysketch.pyqt4
 import pysketch.tkinter
 
 # List of different GUI bindings to try for
 excl_modes = [pysketch.pygobject,
               pysketch.pygtk]
-try_modes = [pysketch.tkinter]
+try_modes = [pysketch.pyqt4,
+             pysketch.tkinter]
 
 # The available GUI modes
 mode = {}
@@ -46,9 +48,9 @@ selected_mode = None
 #
 if len(sys.argv) > 1:
     import optparse
-    
+
     parser = optparse.OptionParser(description=pysketch.banner())
-    
+
     parser.add_option('-m', '--mode',
                       action='store', dest='mode', default='', metavar='MODE',
                       help='selects the GUI mode (pygtk, tkinter, ...)')
@@ -64,15 +66,21 @@ if len(sys.argv) > 1:
     parser.add_option('-s', '--size',
                       action='store', dest='size', default='3', metavar='PIXEL',
                       help='size of the drawing pen in pixel [default : %default]')
+    parser.add_option('-f', '--factor',
+                      action='store', dest='factor', default='8', metavar='FACTOR',
+                      help='factor by which the pen width for erase is larger than for normal drawing [default : %default]')
     parser.add_option('-p', '--polarity',
                       action='store_true', dest='polarity', default=False,
                       help='reverse the default polarity to white-on-black')
     parser.add_option('-l', '--list',
                       action='store_true', dest='list', default=False,
                       help='list the GUI bindings available for the -m option')
+    parser.add_option('-n', '--nolines',
+                      action='store_true', dest='nolines', default=False,
+                      help='draw single points (instead of connected lines)')
 
     options, args = parser.parse_args()
-    
+
     # List modes
     if options.list:
         for t in excl_modes:
@@ -82,10 +90,10 @@ if len(sys.argv) > 1:
         for t in try_modes:
             if t.exists():
                 mode[t.name()] = t
-    
+
         print "Available modes are: %s" % ', '.join(mode.keys())
         sys.exit(0)
-    
+
     # Process other options
     if options.mode:
         selected_mode = options.mode
@@ -102,7 +110,7 @@ if len(sys.argv) > 1:
             if y > 0:
                 pysketch.canvas_height = y
         except:
-            pass  
+            pass
     if options.dimensions != '300x300':
         try:
             dl = options.dimensions.split('x')
@@ -114,7 +122,7 @@ if len(sys.argv) > 1:
                 if y > 0:
                     pysketch.canvas_height = y
         except:
-            pass  
+            pass
 
     if options.size != '3':
         try:
@@ -123,8 +131,18 @@ if len(sys.argv) > 1:
                 pysketch.pen_size = pen
         except:
             pass
+    if options.factor != '8':
+        try:
+            fac = int(options.factor)
+            if fac > 0:
+                pysketch.erase_factor = fac
+        except:
+            pass
+
     if options.polarity:
         pysketch.black_pen = False
+    if options.nolines:
+        pysketch.draw_lines = False
 
 #
 # Detect modes
@@ -137,7 +155,7 @@ if not selected_mode:
                 selected_mode = t.name()
             mode[t.name()] = t
             break
-    
+
     for t in try_modes:
         if t.exists():
             # Pre-select first existing mode

@@ -25,14 +25,15 @@
 
 
 def name():
-    return "tkinter"
+    return "pyqt4"
 
 
 def exists():
     try:
-        from Tkinter import *
-        import tkFileDialog
-        from PIL import Image, ImageDraw
+        import sip
+        sip.setapi('QVariant', 2)
+
+        from PyQt4 import QtCore, QtGui
     except:
         return False
 
@@ -40,8 +41,10 @@ def exists():
 
 
 def run_main():
-    import pysketch.tkinter.gui
-    from Tkinter import *
-    root = Tk()
-    w = pysketch.tkinter.gui.TkinterFrame(root)
-    root.mainloop()
+    import pysketch.pyqt4.gui
+    from PyQt4 import QtCore, QtGui
+
+    app = QtGui.QApplication([])
+    window = pysketch.pyqt4.gui.PyQt4Window()
+    window.show()
+    app.exec_()

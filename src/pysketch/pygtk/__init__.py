@@ -23,8 +23,10 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+
 def name():
     return "pygtk"
+
 
 def exists():
     try:
@@ -34,8 +36,9 @@ def exists():
         import gtk.gdk
     except:
         return False
-    
+
     return True
+
 
 def run_main():
     import pysketch.pygtk.gui
@@ -43,4 +46,3 @@ def run_main():
     w = pysketch.pygtk.gui.PygtkWindow()
     w.show()
     gtk.main()
-   

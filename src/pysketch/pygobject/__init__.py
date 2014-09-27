@@ -23,8 +23,10 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+
 def name():
     return "pygobject"
+
 
 def exists():
     try:
@@ -32,8 +34,9 @@ def exists():
         from gi.repository import Gtk, Gdk
     except:
         return False
-    
+
     return True
+
 
 def run_main():
     import pysketch.pygobject.gui

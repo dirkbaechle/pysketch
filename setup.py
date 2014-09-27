@@ -36,8 +36,7 @@ setup(name='pysketch',
       packages=['pysketch',
                 'pysketch/pygobject',
                 'pysketch/pygtk',
-                'pysketch/tkinter',
-               ],
-      package_dir={'' : 'src'},
-      scripts = ['pysketch']
-     )
+                'pysketch/pyqt4',
+                'pysketch/tkinter'],
+      package_dir={'': 'src'},
+      scripts=['pysketch'])

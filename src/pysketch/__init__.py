@@ -32,7 +32,7 @@ pen_size = 3
 erase_factor = 8
 black_pen = True
 draw_lines = True
-version = '1.1'
+version = '1.2'
 
 
 def banner():

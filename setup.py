@@ -25,10 +25,10 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='pysketch',
-      version='1.0',
+      version='1.2',
       description='Draw simple notes and scribbles on a canvas',
       author='Dirk Baechle',
       author_email='dl9obn@darc.de',
@@ -39,4 +39,14 @@ setup(name='pysketch',
                 'pysketch/pyqt4',
                 'pysketch/tkinter'],
       package_dir={'': 'src'},
-      scripts=['pysketch'])
+      scripts=['pysketch'],
+      license='MIT',
+      classifiers=['Development Status :: 3 - Alpha',
+                   'Environment :: X11 Applications',
+                   'Intended Audience :: End Users/Desktop',
+                   'Topic :: Utilities',
+                   'License :: OSI Approved :: MIT License',
+                   'Programming Language :: Python :: 2'
+                  ],
+      keywords='desktop note scribble',
+      )
